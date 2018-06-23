@@ -115,7 +115,12 @@ void Sequence::Filter(Sequence::Table* tmp){
 		}
 }
 string Sequence::longestRepeated(){
-	Table* t=new Table("");
-	Filter(t);
-	return BestString;
+	int size=s.size();
+	string* tmp=new string[3*size/4];
+	for(int i=0;i<3*size/4;i++){
+		tmp[i]=string(s,i,size/4);
+		int t=Match(tmp[i]);
+		if(t>1)
+			cout<<t<<endl;
+	}
 }
