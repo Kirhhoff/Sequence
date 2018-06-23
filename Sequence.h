@@ -5,34 +5,38 @@
 #include<string>
 using namespace std;
 
+int getIndex(char base);
+char getBase(int index);
+
 class Sequence{
 		ifstream fin;
-		int A;
-		int C;
-		int T;
-		int G;
 		string s;
-
-		int Astart;
-		int Amax;
-		int Cstart;
-		int Cmax;
-		int Tstart;
-		int Tmax;
-		int Gstart;
-		int Gmax;
+		string BestString;
+		long Num[4];
+		long Start[4];
+		long Max[4];
 		char last;
-		char last_t;
 	private:
-		void getA();
-		void getC();
-		void getT();
-		void getG();
+		struct Table{
+			Table* Sons[4];
+			string Heads[4];
+			long matchs[4];
+			Table(string baseString){
+				for(int i=0;i<4;i++){
+					//char rear={getBase(i),0};
+					Heads[i]=baseString+getBase(i);
+					matchs[i]=0;
+				}
+			}
+		};
+		void Filter(Table* t);
 		void ReadFile();
+		void getX(char base);
+		long Match(string t);
 	public:
 		Sequence(string filename);
 		int length(){return s.size();}
-		int numberOf(char base);
+		long numberOf(char base){return Num[getIndex(base)];}
 		string longestConsecutive();
 		string longestRepeated();
 };
