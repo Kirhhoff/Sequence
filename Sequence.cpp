@@ -1,9 +1,10 @@
 #include"Sequence.h"
 
-Sequence::Sequence(string filename):last(0){
+Sequence::Sequence(string filename):last(0),InitNum(0){
 	Num[4]={};
 	Start[4]={};
 	Max[4]={};
+	
 	fin.open(filename.c_str());
 	if(!fin.is_open())
 		cout<<"Fail to open file:"<<filename<<endl;
@@ -12,11 +13,12 @@ Sequence::Sequence(string filename):last(0){
 
 void Sequence::ReadFile(){
 	char p;
-	while((p=fin.get())!=EOF){
-		if(p=='\n')
-			continue;
-		getX(p);
-		s+=p;
+	while((p=fin.get())&&){
+		if(p!='\n'){
+			getX(p);
+			s+=p;
+			all++;
+		}
 	}
 	//getX('p');
 }
@@ -115,12 +117,12 @@ void Sequence::Filter(Sequence::Table* tmp){
 		}
 }
 string Sequence::longestRepeated(){
-	int size=s.size();
+	/*int size=s.size();
 	string* tmp=new string[3*size/4];
 	for(int i=0;i<3*size/4;i++){
 		tmp[i]=string(s,i,size/4);
 		int t=Match(tmp[i]);
 		if(t>1)
 			cout<<t<<endl;
-	}
+	}*/
 }

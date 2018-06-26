@@ -9,6 +9,8 @@ int getIndex(char base);
 char getBase(int index);
 
 class Sequence{
+		enum {INI=100,MAX=1000000};
+	private:
 		ifstream fin;
 		string s;
 		string BestString;
@@ -29,6 +31,19 @@ class Sequence{
 				}
 			}
 		};
+		struct Init{
+			string head;
+			long matchs;
+			long starts[50]={};
+			Init(string stmp,long st){
+				head=stmp;
+				matchs=1;
+				starts[0]=st;
+			}
+		};
+	private:
+		Init* Inits[MAX];
+		long InitNum;
 		void Filter(Table* t);
 		void ReadFile();
 		void getX(char base);
