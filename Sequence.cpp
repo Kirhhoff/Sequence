@@ -1,9 +1,21 @@
 #include"Sequence.h"
 
-Sequence::Sequence(string filename):last(0){
-	Num[4]={};
-	Start[4]={};
-	Max[4]={};
+char Base[]="ACTG";
+Sequence::Table::Table(string baseString,int com){
+	common=com;
+	cMatchs=0;
+	for(int i=0;i<4;i++)
+		Heads[i]=baseString+Base[i];
+}
+
+Sequence::Sequence(string filename):last(0),Ancestor(new Table("",0)){
+	for(int i=0;i<4;i++){
+		Num[i]=0;
+		Start[i]=0;
+		Max[i]=0;
+		Ancestor->Sons[i]=new Table(Ancestor->Heads[i],1);
+		Ancestor->Sons[i]->cStarts=new int[MAX];
+	}
 	fin.open(filename.c_str());
 	if(!fin.is_open())
 		cout<<"Fail to open file:"<<filename<<endl;
@@ -18,7 +30,6 @@ void Sequence::ReadFile(){
 		getX(p);
 		s+=p;
 	}
-	//getX('p');
 }
 
 int getIndex(char base){
@@ -29,17 +40,10 @@ int getIndex(char base){
 			case 'G':return 3;
 	}
 }
-char getBase(int index){
-	switch(index){
-		case 0:return 'A';
-		case 1:return 'C';
-		case 2:return 'T';
-		case 3:return 'G';
-	}
-}
+
 void Sequence::getX(char base){
-	static long tmpStart[4]={};
-	static long tmpMax[4]={};
+	static int tmpStart[4]={};
+	static int tmpMax[4]={};
 	static int index=0;
 	
 	if(base=='p'){
@@ -50,6 +54,7 @@ void Sequence::getX(char base){
 	}
 	index=getIndex(base);
 	Num[index]++;
+	Ancestor->Sons[index]->cStarts[Ancestor->Sons[index]->cMatchs++]=s.size();
 	if(last==base){
 		tmpMax[index]++;
 		last=base;
@@ -66,7 +71,7 @@ void Sequence::getX(char base){
 }
 string Sequence::longestConsecutive(){
 	int maxIndex=0;
-	long maxMax=0;
+	int maxMax=0;
 	long minStart=9999999;
 	for(int i=0;i<4;i++)
 		if(Max[i]>maxMax){
@@ -76,46 +81,33 @@ string Sequence::longestConsecutive(){
 	for(int i=0;i<4;i++)
 		if(Max[i]==maxMax&&Start[i]<minStart)
 			maxIndex=i;
-	//for(int i=0;i<4;i++)
-		//cout<<i<<": "<<Max[i]<<" "<<Start[i]<<endl;
-	return string(Max[maxIndex],getBase(maxIndex));
+	return string(Max[maxIndex],Base[maxIndex]);
 }
-long Sequence::Match(string point){
-	long len=point.size();
-	long start=0;
-	long times=0;
-	while((start=s.find(point,start))!=string::npos){
-		start+=len;
-		times++;
-	}
-	return times;
-}
-void Sequence::Filter(Sequence::Table* tmp){
-	
+
+void Sequence::Filter(Sequence::Table* tmp){{
+	int mIndex;
 	for(int i=0;i<4;i++){
-		tmp->Sons[i]=new Table(tmp->Heads[i]);
-		tmp->matchs[i]=Match(tmp->Heads[i]);
-		//cout<<tmp->Heads[i]<<" "<<tmp->matchs[i]<<endl;
+		tmp->Sons[i]=new Table(tmp->Heads[i],tmp->common+1);
+		tmp->Sons[i]->cStarts=new int[tmp->cMatchs];
 	}
-	for(int i=0;i<4;i++)
-		if(tmp->matchs[i]>=2){
-			if(tmp->Heads[i].size()>BestString.size()){
-				cout<<tmp->Heads[i]<<endl;
+	for(int i=0;i<tmp->cMatchs;i++){
+		mIndex=getIndex(s[tmp->cStarts[i]+tmp->common]);
+		tmp->Sons[mIndex]->cStarts[tmp->Sons[mIndex]->cMatchs++]=tmp->cStarts[i];
+	}
+}
+	for(int i=0;i<4;i++){
+		Table*& Stmp=tmp->Sons[i];
+		if(Stmp->cMatchs>1){
+			if(Stmp->common>BestString.size())
 				BestString=tmp->Heads[i];
-			}
+			Filter(Stmp);
 		}
-		else{
-			delete tmp->Sons[i];
-			tmp->Sons[i]=0;
-		}
-	for(int i=0;i<4;i++)
-		if(tmp->Sons[i]){
-			Filter(tmp->Sons[i]);
-			delete tmp->Sons[i];
-		}
+		delete Stmp;
+	}
+	delete tmp->cStarts;
 }
 string Sequence::longestRepeated(){
-	Table* t=new Table("");
-	Filter(t);
+	for(int i=0;i<4;i++)
+		Filter(Ancestor->Sons[i]);
 	return BestString;
 }
