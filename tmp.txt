@@ -1,0 +1,104 @@
+CTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+		<title></title>
+			<style type="text/css">
+					
+					.Block{
+										width: 400px;
+											   			height: 400px;
+																			float: left;
+																				   			margin: 10px 10px;
+																												background: white; 
+																																	}
+		.Block .Move{
+							position: relative;
+									  			width: 100px;
+													   			height: 100px;
+																					background: blue;
+																											margin:0px 0px;
+																												   			padding: 0px 0px;
+																																	 			left:150px;
+																																					 			top:150px; 
+																																											}
+		#box{
+							width: 840px;
+								   			height: 840px;
+																background: #cccccc;
+																					}
+	</style>
+		<script type="text/javascript">
+				window.onload=function(){
+									var Timer;
+												var oBlocks=[];
+															var oMoves=[];
+																		var Mode=[0,1,2,3];
+																					var Point=[0,0,0,0];
+																								var CurPos=[0,0,0,0];
+																											for(var i=0;i<box.children.length;i++){
+																																	oBlocks[i]=box.children[i];
+																																					oMoves[i]=box.children[i].children[0];
+																																									alert(oMoves[i].offsetLeft);
+
+																																												}
+																														//var oDivs=getElementsByTagName('div');
+																														for(var i=0;i<4;i++){
+																																				oMoves[i].onmouseover=function(){
+																																											clearInterval(Timer);
+																																																for(var i=0;i<4;i++){
+																																																								nextMode(Mode[i]);
+																																																														switch(Mode[i]){
+																																																																							case 0:{Point[i]=oMoves[i].parentNode.offsetLeft;
+																																																																										   									CurPos[i]=oMoves[i].offsetLeft;
+																																																																																										};
+																																																																								   							case 1:{Point[i]=oMoves[i].parentNode.offsetRight;
+																																																																																		   									CurPos[i]=oMoves[i].offsetRight;
+																																																																																																		};
+																																																																																   							case 2:{Point[i]=oMoves[i].parentNode.offsetTop;
+																																																																																										   									CurPos[i]=oMoves[i].offsetTop;
+																																																																																																										};
+																																																																																								   							case 3:{Point[i]=oMoves[i].parentNode.offsetBottom;
+																																																																																																		   									CurPos[i]=oMoves[i].offsetBottom;
+																																																																																																																		};
+																																																																																																   						}
+																																																																				alert(Point[i]);
+																																																																										alert(CurPos[i]);
+																																																																															}
+																																																					Timer=setInterval(moveAll,30);
+																																																									}
+																																								oMoves[i].onmouseout=function(){
+																																															clearInterval(Timer);
+																																																			}
+																																											}
+																																	function nextMode(curMode){curMode=(curMode==3?0:curMode+1);}
+																																				function moveAll(){
+																																										for(var i=0;i<4;i++){
+																																																	//alert(1);
+																																																	alert(Point[i]);
+																																																						alert(CurPos[i]);
+																																																											if(Point[i]!=CurPos[i]){
+																																																																			alert(1);
+																																																																									speed=(Point[i]-CurPos[i])*0.1;
+																																																																															if(speed<0&&speed>-1)
+																																																																																								speed=-1;
+																																																																																					else if(speed<1&&speed>0)
+																																																																																														speed=1;
+																																																																																											alert(Point[i])
+																																																																																																			CurPos[i]+=speed;
+																																																																																																}
+																																																															}
+																																													}	
+																																						}
+	</script>
+	</head>
+	<body>
+		<div id="box">
+				<div class='Block'><div class='Move'></div></div>
+						<div class='Block'><div class='Move'></div></div>
+								<div class='Block'><div class='Move'></div></div>
+										<div class='Block'><div class='Move'></div></div>
+											</div>
+											</body>
+											</html>
+

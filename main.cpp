@@ -3,7 +3,7 @@
 
 int main(){
 	time_t ta=clock();
-	Sequence tmp("dna.txt");
+	Sequence tmp("/data/dna.txt");
 	cout<<"A: "<<tmp.numberOf('A')<<endl;
 	cout<<"C: "<<tmp.numberOf('C')<<endl;
 	cout<<"T: "<<tmp.numberOf('T')<<endl;
